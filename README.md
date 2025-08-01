@@ -1,10 +1,10 @@
-# NOI Project
+# WeGrow
 
-> *Hackathon Project - [Event Name] [Year]*
+> *Hackathon Project - [NOI Hackathon] [2025]*
 
 ## 🚀 Overview
 
-Brief description of what your project does and the problem it solves.
+Hi everyone! We are WeGrow,
 
 ## 🎯 Problem Statement
 
@@ -32,10 +32,6 @@ Explain your approach and how your solution addresses the problem statement.
 
 - Technology 1
 - Technology 2
-
-**Database:**
-
-- Database name
 
 **Other Tools:**
 

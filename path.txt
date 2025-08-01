@@ -1,0 +1,41 @@
+ROADMAP
+    -understand codebase
+
+    -add the possibility to retrieve all the data when the user click the submit button
+    -format the data in an usable format
+
+    -resolve numpy.float64 bug
+    -differences between the three modes:
+        Open mode:
+            -the temp, humidity, light, water parameters are setted by the meteo api, the rest is setted by the user
+            
+        SemiControlled mode:
+            -the user choose how to set the parameters
+        
+        Controlled mode:
+            -all the values are set by the user
+        
+    
+    -default modes are setted with general values in an optimal condition for your plant
+
+    -The forecast results will have as input the text description obtained by the model
+        (the output will be in the text folder inside data/texts folder, format "date1-date2-enum.txt")
+    -The growth evolution will have as input the photo/s obtained by the model
+        (the output will be in the text folder inside data/images folder, format "date1-date2-enum.jpg)
+
+    -make the plant information as a text field, remove all the connections with other functions
+    
+    -set the value of light as Daily Light Integral (DLI)
+
+    -forecast for a period of time:
+        -create a calendar widget with start and end data
+        -based on how much does it take to create an image, for each subperiod of time create a new image to show
+        (it this will be coded add all a button to iterate over the folder)
+    
+    -when the user click the load plant image, all previous record will be eliminated
+
+    -final updates of README.md, hackathon page, forgejo, github page, small design adjustments.
+
+
+DURING DINNER
+    -update all on forgejo, hackathon page, forgejo
