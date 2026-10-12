@@ -28,8 +28,8 @@ def main():
     print("=" * 60)
     
     # Check Python version
-    if sys.version_info < (3.7, 0):
-        print("❌ Error: Python 3.7 or higher is required")
+    if sys.version_info < (3, 8):
+        print("❌ Error: Python 3.8 or higher is required")
         print(f"Current version: {sys.version}")
         sys.exit(1)
     
@@ -48,7 +48,7 @@ def main():
     print("✅ tkinter is available")
     
     # Install requirements
-    requirements_file = os.path.join(os.path.dirname(__file__), "..", "requirements.txt")
+    requirements_file = os.path.join(os.path.dirname(os.path.abspath(__file__)), "requirements.txt")
     
     if not os.path.exists(requirements_file):
         print("❌ requirements.txt not found!")
@@ -69,8 +69,7 @@ def main():
             "matplotlib>=3.5.0",
             "pandas>=1.3.0", 
             "numpy>=1.21.0",
-            "Pillow>=8.3.0",
-            "joblib>=1.1.0"
+            "Pillow>=10.1"
         ]
         
         failed_packages = []
@@ -89,14 +88,10 @@ def main():
     
     print("\n🎉 Installation completed successfully!")
     print("\nTo run the application:")
-    print("  python scripts/launcher.py")
+    print("  python3 PlantDashboard/launcher.py")
     print("\nOr run the main dashboard directly:")
-    print("  python scripts/main_dashboard.py")
+    print("  python3 PlantDashboard/main_dashboard.py")
     
-    print("\n📋 Note: This version excludes opencv-cv and seaborn")
-    print("  • Heatmaps use matplotlib instead of seaborn")
-    print("  • Video functionality has been removed")
-    print("  • All other features remain fully functional")
 
 if __name__ == "__main__":
     main()

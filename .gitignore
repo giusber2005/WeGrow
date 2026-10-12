@@ -128,3 +128,6 @@ out/
 .npm/
 .eslintcache
 .stylelintcache
+
+# Dashboard runtime data
+PlantDashboard/data/

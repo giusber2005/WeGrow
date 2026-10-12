@@ -2,17 +2,35 @@ import pandas as pd
 import json
 import csv
 import os
+import shutil
 from datetime import datetime
 
+DATA_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data")
+
 class DataHandler:
-    def __init__(self):
-        self.data_directory = "plant_data"
+    def __init__(self, data_directory=DATA_DIR):
+        self.data_directory = data_directory
         self.ensure_data_directory()
         
     def ensure_data_directory(self):
         """Ensure the data directory exists"""
-        if not os.path.exists(self.data_directory):
-            os.makedirs(self.data_directory)
+        os.makedirs(self.data_directory, exist_ok=True)
+
+    def save_submission(self, payload, image_path=None):
+        """Save a submission as data/submissions/<id>/submission.json (plus a copy of the photo)"""
+        submission_id = datetime.now().strftime("%Y%m%d_%H%M%S")
+        folder = os.path.join(self.data_directory, "submissions", submission_id)
+        os.makedirs(folder, exist_ok=True)
+
+        payload = {'id': submission_id, **payload}
+        if image_path:
+            photo_name = "photo" + os.path.splitext(image_path)[1].lower()
+            shutil.copy2(image_path, os.path.join(folder, photo_name))
+            payload['photo'] = photo_name
+
+        with open(os.path.join(folder, "submission.json"), 'w') as f:
+            json.dump(payload, f, indent=2, default=float)
+        return submission_id, folder
             
     def save_prediction_data(self, parameters, prediction, filename=None):
         """Save prediction data to CSV"""

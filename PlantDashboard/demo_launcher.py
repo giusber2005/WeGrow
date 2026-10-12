@@ -56,16 +56,13 @@ def main():
         app = PlantGrowthGraphicsDemo(root)
         
         print("✅ Graphics demo ready!")
-        print("\n🎮 Demo Features:")
-        print("  • Real-time parameter visualization")
-        print("  • Interactive plant growth charts")
-        print("  • Dynamic plant evolution images")
-        print("  • Parameter heatmaps and 3D plots")
-        print("  • Live health indicators")
-        print("  • Animated growth sequences")
-        print("\n🎛️ Try changing parameters with the sliders!")
-        print("🎬 Click 'Animate Growth' for dynamic effects!")
-        
+        print("\nDemo features:")
+        print("  • 6 plants, driven by the WeGrow growth model")
+        print("  • Growth chart with an outcome range in Dynamic/Chaotic scenarios")
+        print("  • Plant evolution, health heatmap and 3D height surface")
+        print("  • Live statistics, health gauge and condition radar")
+        print("  • 'Animate growth' sweeps through the season; Chaotic mode drifts with the weather")
+
         root.mainloop()
         
     except Exception as e:

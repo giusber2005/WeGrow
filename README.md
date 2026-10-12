@@ -48,41 +48,22 @@ Explain your approach and how your solution addresses the problem statement.
 
 ### Prerequisites
 
-```bash
-# List any prerequisites here
-# e.g., Node.js 18+, Python 3.9+
-```
+- Python 3.8+ with tkinter (Debian/Ubuntu/Kali: `sudo apt install python3-tk`)
 
 ### Installation
 
-1. Clone the repository
-
 ```bash
-git clone https://github.com/your-username/NOIProject.git
-cd NOIProject
+python3 -m venv .venv && source .venv/bin/activate
+pip install -r PlantDashboard/requirements.txt
 ```
 
-1. Install dependencies
+### Run the dashboard
 
 ```bash
-# Add installation commands here
-# e.g., npm install, pip install -r requirements.txt
+python3 PlantDashboard/launcher.py
 ```
 
-1. Set up environment variables
-
-```bash
-# Copy example environment file
-cp .env.example .env
-# Edit .env with your configuration
-```
-
-1. Run the application
-
-```bash
-# Add run commands here
-# e.g., npm start, python app.py
-```
+Submissions from the "My plant" tab are saved to `PlantDashboard/data/submissions/<id>/` (JSON + a copy of the photo).
 
 ## 📸 Screenshots
 

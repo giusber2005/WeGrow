@@ -1,8 +1,7 @@
 import numpy as np
-import joblib
 import pickle
-from datetime import datetime, timedelta
 import random
+import zlib
 
 class PlantGrowthModel:
     def __init__(self):
@@ -89,8 +88,13 @@ class PlantGrowthModel:
             }
         }
         
-    def predict_growth(self, parameters):
-        """Predict plant growth based on environmental parameters"""
+    def predict_growth(self, parameters, seed=None):
+        """Predict plant growth based on environmental parameters.
+
+        The random variation is seeded from the parameters, so the same inputs
+        always give the same forecast (no flickering numbers in the UI).
+        """
+        rng = random.Random(self._seed_for(parameters) if seed is None else seed)
         plant_type = parameters.get('plant_type', 'tomato')
         ambient_mode = parameters.get('ambient_mode', 'controlled')
         
@@ -106,17 +110,17 @@ class PlantGrowthModel:
         if ambient_mode == 'open':
             # Add random variations for open environment
             for factor in stress_factors:
-                stress_factors[factor] *= (0.8 + random.random() * 0.4)
+                stress_factors[factor] = min(1.0, stress_factors[factor] * (0.8 + rng.random() * 0.4))
         elif ambient_mode == 'semi-controlled':
             # Moderate variations
             for factor in stress_factors:
-                stress_factors[factor] *= (0.9 + random.random() * 0.2)
+                stress_factors[factor] = min(1.0, stress_factors[factor] * (0.9 + rng.random() * 0.2))
                 
         # Calculate overall health score
-        health_score = np.mean(list(stress_factors.values())) * 100
+        health_score = float(np.mean(list(stress_factors.values())) * 100)
         
         # Generate growth stages
-        growth_stages = self._simulate_growth_stages(plant_info, stress_factors)
+        growth_stages = self._simulate_growth_stages(plant_info, stress_factors, rng)
         
         # Calculate final metrics
         final_height = growth_stages[-1] if growth_stages else 0
@@ -139,8 +143,16 @@ class PlantGrowthModel:
             'optimal_conditions': optimal_conditions,
             'yield': yield_estimate,
             'phases': phases,
-            'stress_factors': stress_factors
+            'stress_factors': {k: float(v) for k, v in stress_factors.items()},
+            'max_height': plant_info['max_height'],
         }
+
+    @staticmethod
+    def _seed_for(parameters):
+        """Stable seed derived from the (rounded) input parameters"""
+        key = sorted((k, round(v, 2) if isinstance(v, (int, float)) else v)
+                     for k, v in parameters.items())
+        return zlib.crc32(repr(key).encode())
         
     def _calculate_stress_factors(self, params, plant_info):
         """Calculate stress factors for each environmental parameter"""
@@ -187,6 +199,16 @@ class PlantGrowthModel:
         light_factor = min(1.0, brightness / optimal_light)
         factors['light'] = max(0.1, light_factor)
         
+        # Atmospheric pressure stress: plants tolerate normal weather swings,
+        # but low pressure (altitude) reduces CO2/O2 availability and raises transpiration
+        pressure = params.get('pressure', 1013.25)
+        opt_pressure = plant_info.get('optimal_pressure', (990, 1030))
+        if opt_pressure[0] <= pressure <= opt_pressure[1]:
+            factors['pressure'] = 1.0
+        else:
+            deviation = min(abs(pressure - opt_pressure[0]), abs(pressure - opt_pressure[1]))
+            factors['pressure'] = max(0.5, 1.0 - deviation / 80.0)
+
         # CO2 stress
         co2 = params.get('co2', 400)
         optimal_co2 = 600  # Optimal CO2 in ppm
@@ -195,13 +217,13 @@ class PlantGrowthModel:
         
         return factors
         
-    def _simulate_growth_stages(self, plant_info, stress_factors):
+    def _simulate_growth_stages(self, plant_info, stress_factors, rng):
         """Simulate daily growth stages"""
         base_rate = plant_info['growth_rate_base']
         max_height = plant_info['max_height']
         phases = plant_info['phases']
         
-        overall_stress = np.mean(list(stress_factors.values()))
+        overall_stress = float(np.mean(list(stress_factors.values())))
         adjusted_rate = base_rate * overall_stress
         
         growth_stages = []
@@ -215,7 +237,7 @@ class PlantGrowthModel:
             for _ in range(phase_duration):
                 daily_growth = adjusted_rate * growth_factor
                 # Add some randomness
-                daily_growth *= (0.8 + random.random() * 0.4)
+                daily_growth *= (0.8 + rng.random() * 0.4)
                 
                 current_height += daily_growth
                 current_height = min(current_height, max_height)
